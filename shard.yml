@@ -1,0 +1,21 @@
+name: skywire-node-monitor
+version: 0.1.0
+
+authors:
+  - Christian Kakesa <christian.kakesa@gmail.com>
+
+targets:
+  skywire-node-monitor:
+    main: src/skywire-node-monitor.cr
+
+dependencies:
+  awesome-logger:
+    github: tbrand/awesome-logger
+  crystal-rethinkdb:
+    github: kingsleyh/crystal-rethinkdb
+  pool:
+    github: ysbaddaden/pool
+
+crystal: 0.26.1
+
+license: MIT
