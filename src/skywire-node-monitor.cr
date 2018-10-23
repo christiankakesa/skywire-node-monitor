@@ -39,10 +39,10 @@ module SkywireNodeMonitor
     DB_TABLE_NAME    = ENV.fetch("APP_DB_TABLE_NAME", "nodes_metrics")
     DB_USER          = ENV.fetch("APP_DB_USER", "skywirenode")
     DISCOVERY_QUERY  = ENV.fetch("APP_DISCOVERY_QUERY", "/conn/getAll")
-    DISCOVERY_URI    = ENV.fetch("DISCOVERY_URI", "http://discovery.skycoin.net:8001")
+    DISCOVERY_URI    = ENV.fetch("APP_DISCOVERY_URI", "http://discovery.skycoin.net:8001")
     TICK_TIME_SECOND = ENV["APP_TICK_TIME_SECOND"]?.try(&.to_i32) || 10
 
-    @@rpool : ConnectionPool(RethinkDB::Connection) = ConnectionPool.new(capacity: 10, timeout: 15) do
+    @@rpool : ConnectionPool(RethinkDB::Connection) = ConnectionPool.new(capacity: 10, timeout: 0.1) do
       RethinkDB.connect(host: DB_HOST, port: DB_PORT, db: DB_NAME, user: DB_USER, password: DB_PASSWORD)
     end
     @@rpool.connection do |conn|
@@ -55,7 +55,7 @@ module SkywireNodeMonitor
       end
     end
 
-    @@hpool : ConnectionPool(HTTP::Client) = ConnectionPool.new(capacity: 5, timeout: 15) do
+    @@hpool : ConnectionPool(HTTP::Client) = ConnectionPool.new(capacity: 5, timeout: 0.1) do
       HTTP::Client.new(URI.parse(DISCOVERY_URI))
     end
 
