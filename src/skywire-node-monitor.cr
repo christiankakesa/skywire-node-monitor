@@ -3,8 +3,6 @@ require "http/client"
 require "crystal-rethinkdb"
 require "pool/connection"
 
-# Javascript chart library: https://github.com/c3js/c3
-
 # Structure of RethinkDB tables
 #
 # # nodes_metrics
