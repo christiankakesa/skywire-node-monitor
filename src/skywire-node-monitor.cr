@@ -49,7 +49,6 @@ module SkywireNodeMonitor
       begin
         RethinkDB.db(DB_NAME).table_create(DB_TABLE_NAME).run(conn) unless RethinkDB.db(DB_NAME).table_list.run(conn).includes?(DB_TABLE_NAME)
         RethinkDB.db(DB_NAME).table(DB_TABLE_NAME).index_create("timestamp_minute").run(conn) unless RethinkDB.db(DB_NAME).table(DB_TABLE_NAME).index_list.run(conn).includes?("timestamp_minute")
-        RethinkDB.db(DB_NAME).table(DB_TABLE_NAME).index_create("timestamp_hour").run(conn) unless RethinkDB.db(DB_NAME).table(DB_TABLE_NAME).index_list.run(conn).includes?("timestamp_hour")
       rescue ex : RethinkDB::ReqlRunTimeError
         L.w "#{ex.message}"
       end
@@ -91,7 +90,7 @@ module SkywireNodeMonitor
       @@rpool.connection do |conn|
         if r.db(DB_NAME).table(DB_TABLE_NAME).filter({timestamp_hour: r.epoch_time(current_minute_ts),
                                                       type:           "num_of_nodes"}).run(conn).size > 0
-          r.db(DB_NAME).table(DB_TABLE_NAME).filter({timestamp_hour: r.epoch_time(current_minute_ts),
+          L.d r.db(DB_NAME).table(DB_TABLE_NAME).filter({timestamp_hour: r.epoch_time(current_minute_ts),
                                                      type:           "num_of_nodes"}).update { |metrics|
             {
               num_samples:   metrics["num_samples"] + 1,
@@ -100,18 +99,18 @@ module SkywireNodeMonitor
                 "#{now.second}" => nodes.size,
               },
             }
-          }.run(conn)
+          }.run(conn).to_s
         else
-          r.db(DB_NAME).table(DB_TABLE_NAME).insert({
+          L.d r.db(DB_NAME).table(DB_TABLE_NAME).insert({
             name:           "skycoin",
-            timestamp_hour: r.epoch_time(current_minute_ts),
+            timestamp_minute: r.epoch_time(current_minute_ts),
             type:           "num_of_nodes",
             num_samples:    1,
             total_samples:  nodes.size,
             values:         {
               "#{now.second}" => nodes.size,
             },
-          }).run(conn)
+          }).run(conn).to_s
         end
       end
       L.i "TS: #{now} - Number of nodes: #{nodes.size}"
