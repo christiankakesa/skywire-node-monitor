@@ -9,7 +9,7 @@ require "pool/connection"
 #
 # # nodes_metrics
 # + name: [skycoin]
-# + timestamp_hour
+# + timestamp_minute
 # + type: [num_of_nodes]
 # + values: Hash(String, JSON::Any)
 
@@ -88,10 +88,10 @@ module SkywireNodeMonitor
       current_minute_ts = now.at_beginning_of_minute.epoch
       nodes = Nodes.from_json(json_str)
       @@rpool.connection do |conn|
-        if r.db(DB_NAME).table(DB_TABLE_NAME).filter({timestamp_hour: r.epoch_time(current_minute_ts),
-                                                      type:           "num_of_nodes"}).run(conn).size > 0
-          L.d r.db(DB_NAME).table(DB_TABLE_NAME).filter({timestamp_hour: r.epoch_time(current_minute_ts),
-                                                     type:           "num_of_nodes"}).update { |metrics|
+        if r.db(DB_NAME).table(DB_TABLE_NAME).filter({timestamp_minute: r.epoch_time(current_minute_ts),
+                                                      type:             "num_of_nodes"}).run(conn).size > 0
+          r.db(DB_NAME).table(DB_TABLE_NAME).filter({timestamp_minute: r.epoch_time(current_minute_ts),
+                                                     type:             "num_of_nodes"}).update { |metrics|
             {
               num_samples:   metrics["num_samples"] + 1,
               total_samples: metrics["total_samples"] - metrics["values"]["#{now.second}"].default(0) + nodes.size,
@@ -99,18 +99,18 @@ module SkywireNodeMonitor
                 "#{now.second}" => nodes.size,
               },
             }
-          }.run(conn).to_s
+          }.run(conn)
         else
-          L.d r.db(DB_NAME).table(DB_TABLE_NAME).insert({
-            name:           "skycoin",
+          r.db(DB_NAME).table(DB_TABLE_NAME).insert({
+            name:             "skycoin",
             timestamp_minute: r.epoch_time(current_minute_ts),
-            type:           "num_of_nodes",
-            num_samples:    1,
-            total_samples:  nodes.size,
-            values:         {
+            type:             "num_of_nodes",
+            num_samples:      1,
+            total_samples:    nodes.size,
+            values:           {
               "#{now.second}" => nodes.size,
             },
-          }).run(conn).to_s
+          }).run(conn)
         end
       end
       L.i "TS: #{now} - Number of nodes: #{nodes.size}"
