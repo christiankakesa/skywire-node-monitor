@@ -1,6 +1,6 @@
 # Skywire Node Monitor
 
-This program store the number of available Skywire nodes in world ovr the time.
+This program store the number of available Skywire nodes in world over the time.
 
 ## Installation
 
