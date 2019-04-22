@@ -6,7 +6,7 @@ shards:
 
   crystal-rethinkdb:
     github: kingsleyh/crystal-rethinkdb
-    commit: dd4707d53496e7ecff695e3d1a9449a854245114
+    version: 0.1.5
 
   pool:
     github: ysbaddaden/pool

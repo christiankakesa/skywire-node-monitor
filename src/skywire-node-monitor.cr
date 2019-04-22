@@ -83,7 +83,7 @@ module SkywireNodeMonitor
       # hour
       return if json_str.strip.empty?
       now = Time.utc_now
-      current_minute_ts = now.at_beginning_of_minute.epoch
+      current_minute_ts = now.at_beginning_of_minute.to_unix
       nodes = Nodes.from_json(json_str)
       @@rpool.connection do |conn|
         if r.db(DB_NAME).table(DB_TABLE_NAME).filter({timestamp_minute: r.epoch_time(current_minute_ts),
