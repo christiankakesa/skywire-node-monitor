@@ -15,7 +15,7 @@ You have to install crystal for your operating system: https://crystal-lang.org/
     export APP_DB_TABLE_NAME=nodes_metrics
     export APP_DB_USER=skywirenode
     export APP_DISCOVERY_QUERY="/conn/getAll"
-    export APP_DISCOVERY_URI="http://discovery.skycoin.net:8001"
+    export APP_DISCOVERY_URI="http://discovery.skycoin.com:8001"
     export APP_TICK_TIME_SECOND=300
 
 ## Usage
