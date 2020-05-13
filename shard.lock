@@ -4,11 +4,19 @@ shards:
     github: tbrand/awesome-logger
     commit: 41a2a3d8e4682b5ae3f684ebcadca573e25446a5
 
-  crystal-rethinkdb:
-    github: kingsleyh/crystal-rethinkdb
-    version: 0.1.5
+  habitat:
+    github: luckyframework/habitat
+    version: 0.4.3
 
   pool:
     github: ysbaddaden/pool
     version: 0.2.3
+
+  rethinkdb:
+    github: kingsleyh/crystal-rethinkdb
+    version: 0.1.11
+
+  retriable:
+    github: sija/retriable.cr
+    version: 0.2.0
 

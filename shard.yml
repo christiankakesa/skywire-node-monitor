@@ -11,7 +11,7 @@ targets:
 dependencies:
   awesome-logger:
     github: tbrand/awesome-logger
-  crystal-rethinkdb:
+  rethinkdb:
     github: kingsleyh/crystal-rethinkdb
   pool:
     github: ysbaddaden/pool
