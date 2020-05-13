@@ -1,6 +1,6 @@
 require "awesome-logger"
 require "http/client"
-require "crystal-rethinkdb"
+require "rethinkdb"
 require "pool/connection"
 
 # Structure of RethinkDB tables
