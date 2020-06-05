@@ -9,13 +9,11 @@ targets:
     main: src/skywire-node-monitor.cr
 
 dependencies:
-  awesome-logger:
-    github: tbrand/awesome-logger
   rethinkdb:
     github: kingsleyh/crystal-rethinkdb
   pool:
     github: ysbaddaden/pool
 
-crystal: 0.27.2
+crystal: 0.34.0
 
 license: MIT

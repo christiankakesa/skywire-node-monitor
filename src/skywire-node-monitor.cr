@@ -1,4 +1,3 @@
-require "awesome-logger"
 require "http/client"
 require "rethinkdb"
 require "pool/connection"
@@ -45,10 +44,10 @@ module SkywireNodeMonitor
     end
     @@rpool.connection do |conn|
       begin
-        RethinkDB.db(DB_NAME).table_create(DB_TABLE_NAME).run(conn) unless RethinkDB.db(DB_NAME).table_list.run(conn).includes?(DB_TABLE_NAME)
-        RethinkDB.db(DB_NAME).table(DB_TABLE_NAME).index_create("timestamp_minute").run(conn) unless RethinkDB.db(DB_NAME).table(DB_TABLE_NAME).index_list.run(conn).includes?("timestamp_minute")
+        RethinkDB.db(DB_NAME).table_create(DB_TABLE_NAME).run(conn) unless RethinkDB.db(DB_NAME).table_list.run(conn).as_a.includes?(DB_TABLE_NAME)
+        RethinkDB.db(DB_NAME).table(DB_TABLE_NAME).index_create("timestamp_minute").run(conn) unless RethinkDB.db(DB_NAME).table(DB_TABLE_NAME).index_list.run(conn).as_a.includes?("timestamp_minute")
       rescue ex : RethinkDB::ReqlRunTimeError
-        L.w "#{ex.message}"
+        puts "#{ex.message}"
       end
     end
 
@@ -66,11 +65,11 @@ module SkywireNodeMonitor
                 spawn write_stats(json_str)
                 sleep TICK_TIME_SECOND
               else
-                L.w "[ERROR - HTTP RESPONSE]: empty"
+                puts "[ERROR - HTTP RESPONSE]: empty"
                 sleep 1
               end
             else
-              L.w "[ERROR - HTTP STATUS CODE]: #{response.status_code}"
+              puts "[ERROR - HTTP STATUS CODE]: #{response.status_code}"
               sleep 1
             end
           end
@@ -82,7 +81,7 @@ module SkywireNodeMonitor
       # Exeample (MongoDB): https://www.mongodb.com/blog/post/schema-design-for-time-series-data-in-mongodb
       # hour
       return if json_str.strip.empty?
-      now = Time.utc_now
+      now = Time.utc
       current_minute_ts = now.at_beginning_of_minute.to_unix
       nodes = Nodes.from_json(json_str)
       @@rpool.connection do |conn|
@@ -111,7 +110,7 @@ module SkywireNodeMonitor
           }).run(conn)
         end
       end
-      L.i "TS: #{now} - Number of nodes: #{nodes.size}"
+      puts "TS: #{now} - Number of nodes: #{nodes.size}"
     end
   end
 end
